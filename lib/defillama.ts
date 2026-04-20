@@ -17,7 +17,7 @@ export interface StablecoinSummary {
 
 export interface HistoricalPoint {
   date: number;
-  totalCirculatingUSD: { peggedUSD: number };
+  circulating: { peggedUSD: number };
 }
 
 const TRACKED_SYMBOLS = [

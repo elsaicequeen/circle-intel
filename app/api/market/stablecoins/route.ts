@@ -13,7 +13,7 @@ export async function GET() {
       const hist = await fetchStablecoinHistory(s.id);
       const recent = hist.slice(-90).map((pt) => ({
         date: new Date(pt.date * 1000).toISOString().slice(0, 10),
-        supply: pt.totalCirculatingUSD?.peggedUSD ?? 0,
+        supply: pt.circulating?.peggedUSD ?? 0,
       }));
       return { id: s.id, symbol: s.symbol, color: meta?.color ?? "#888", history: recent };
     })

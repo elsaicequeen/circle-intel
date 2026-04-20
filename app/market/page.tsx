@@ -117,17 +117,19 @@ export default function MarketPage() {
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-                <XAxis dataKey="date" tick={{ fontSize: 9 }} tickFormatter={(d) => d.slice(5)} stroke="#ffffff30" interval={13} />
-                <YAxis tick={{ fontSize: 10 }} tickFormatter={(v) => `$${v}B`} stroke="#ffffff30" width={50} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e8f2" />
+                <XAxis dataKey="date" tick={{ fontSize: 9, fill: "#5d6787" }} tickFormatter={(d) => d.slice(5)} stroke="#e4e8f2" interval={13} />
+                <YAxis tick={{ fontSize: 10, fill: "#5d6787" }} tickFormatter={(v) => `$${v}B`} stroke="#e4e8f2" width={50} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#1a2235", border: "1px solid #ffffff15", borderRadius: 8 }}
+                  contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e4e8f2", borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
+                  labelStyle={{ color: "#0d0e16", fontWeight: 600, marginBottom: 4 }}
+                  itemStyle={{ color: "#5d6787" }}
                   formatter={(v, name) => [`$${Number(v).toFixed(1)}B`, name as string]}
                 />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 {data?.histories.map((h) => (
                   <Area key={h.symbol} type="monotone" dataKey={h.symbol} stackId="1"
-                    stroke={h.color} fill={h.color} fillOpacity={0.7} strokeWidth={1} />
+                    stroke={h.color} fill={h.color} fillOpacity={0.15} strokeWidth={2} />
                 ))}
               </AreaChart>
             </ResponsiveContainer>
@@ -140,15 +142,17 @@ export default function MarketPage() {
             <Skeleton className="h-56 w-full" />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={usdc?.chains.slice(0, 8) ?? []} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v) => fmt(v)} stroke="#ffffff30" />
-                <YAxis type="category" dataKey="chain" tick={{ fontSize: 10 }} stroke="#ffffff30" width={80} />
+              <BarChart data={usdc?.chains.slice(0, 8) ?? []} layout="vertical" margin={{ left: 0, right: 16 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e8f2" horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 10, fill: "#5d6787" }} tickFormatter={(v) => fmt(v)} stroke="#e4e8f2" />
+                <YAxis type="category" dataKey="chain" tick={{ fontSize: 11, fill: "#0d0e16" }} stroke="#e4e8f2" width={90} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#1a2235", border: "1px solid #ffffff15", borderRadius: 8 }}
+                  contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e4e8f2", borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
+                  labelStyle={{ color: "#0d0e16", fontWeight: 600 }}
+                  itemStyle={{ color: "#5d6787" }}
                   formatter={(v) => [fmt(Number(v)), "Supply"]}
                 />
-                <Bar dataKey="supply" fill="#2563eb" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="supply" fill="#3752ff" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}

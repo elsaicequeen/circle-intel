@@ -8,32 +8,29 @@ interface MetricCardProps {
   trend?: number;
   icon?: ReactNode;
   accent?: string;
+  hint?: string;
 }
 
-export function MetricCard({ label, value, sub, trend, icon, accent }: MetricCardProps) {
+export function MetricCard({ label, value, sub, trend, hint }: MetricCardProps) {
   return (
-    <Card className="p-5 flex flex-col gap-3 bg-card border-border">
-      <div className="flex items-start justify-between">
-        <span className="text-xs text-muted-foreground uppercase tracking-wider">{label}</span>
-        {icon && (
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: accent ? `${accent}20` : undefined }}>
-            {icon}
-          </div>
+    <Card className="p-5 gap-2 bg-card border-border hover:border-primary/30 transition-colors shadow-[0_1px_2px_rgba(13,14,22,0.04)]">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">{label}</span>
+        {hint && (
+          <span title={hint} className="text-muted-foreground text-xs cursor-help">ⓘ</span>
         )}
       </div>
-      <div>
-        <div className="text-2xl font-bold tracking-tight">{value}</div>
-        {(sub || trend !== undefined) && (
-          <div className="flex items-center gap-2 mt-1">
-            {sub && <span className="text-xs text-muted-foreground">{sub}</span>}
-            {trend !== undefined && (
-              <span className={`text-xs font-medium ${trend >= 0 ? "text-green-400" : "text-red-400"}`}>
-                {trend >= 0 ? "+" : ""}{trend.toFixed(1)}%
-              </span>
-            )}
-          </div>
-        )}
-      </div>
+      <div className="text-[26px] font-semibold tracking-tight leading-none mt-2">{value}</div>
+      {(sub || trend !== undefined) && (
+        <div className="flex items-center gap-2 mt-1.5">
+          {sub && <span className="text-xs text-muted-foreground">{sub}</span>}
+          {trend !== undefined && (
+            <span className={`text-xs font-semibold ${trend >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+              {trend >= 0 ? "↑" : "↓"} {Math.abs(trend).toFixed(1)}%
+            </span>
+          )}
+        </div>
+      )}
     </Card>
   );
 }

@@ -111,14 +111,16 @@ export default function FlowsPage() {
           ) : (
             <ResponsiveContainer width="100%" height={210}>
               <LineChart data={daily}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-                <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={(d) => d.slice(5)} stroke="#ffffff30" />
-                <YAxis tick={{ fontSize: 10 }} tickFormatter={(v) => fmt(v)} stroke="#ffffff30" width={60} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e8f2" />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#5d6787" }} tickFormatter={(d) => d.slice(5)} stroke="#e4e8f2" />
+                <YAxis tick={{ fontSize: 10, fill: "#5d6787" }} tickFormatter={(v) => fmt(v)} stroke="#e4e8f2" width={60} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#1a2235", border: "1px solid #ffffff15", borderRadius: 8 }}
+                  contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e4e8f2", borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
+                  labelStyle={{ color: "#0d0e16", fontWeight: 600 }}
+                  itemStyle={{ color: "#5d6787" }}
                   formatter={(v) => [fmt(Number(v)), "Volume"]}
                 />
-                <Line type="monotone" dataKey="volume" stroke="#2563eb" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="volume" stroke="#3752ff" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           )}
@@ -130,12 +132,14 @@ export default function FlowsPage() {
             <Skeleton className="h-52 w-full" />
           ) : (
             <ResponsiveContainer width="100%" height={210}>
-              <BarChart data={chainVolume} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v) => fmt(v)} stroke="#ffffff30" />
-                <YAxis type="category" dataKey="chain" tick={{ fontSize: 11 }} stroke="#ffffff30" width={75} />
+              <BarChart data={chainVolume} layout="vertical" margin={{ left: 0, right: 16 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e8f2" horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 10, fill: "#5d6787" }} tickFormatter={(v) => fmt(v)} stroke="#e4e8f2" />
+                <YAxis type="category" dataKey="chain" tick={{ fontSize: 11, fill: "#0d0e16" }} stroke="#e4e8f2" width={75} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#1a2235", border: "1px solid #ffffff15", borderRadius: 8 }}
+                  contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e4e8f2", borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
+                  labelStyle={{ color: "#0d0e16", fontWeight: 600 }}
+                  itemStyle={{ color: "#5d6787" }}
                   formatter={(v) => [fmt(Number(v)), "Volume"]}
                 />
                 <Bar dataKey="vol" radius={[0, 4, 4, 0]}>

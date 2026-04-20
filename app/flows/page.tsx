@@ -43,7 +43,6 @@ function fmtNum(n: number) {
 export default function FlowsPage() {
   const [corridors, setCorridors] = useState<Corridor[]>([]);
   const [daily, setDaily] = useState<DailyPoint[]>([]);
-  const [source, setSource] = useState<"dune" | "demo" | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,7 +52,6 @@ export default function FlowsPage() {
     ]).then(([c, d]) => {
       setCorridors(c.data);
       setDaily(d.data);
-      setSource(c.source);
       setLoading(false);
     });
   }, []);
@@ -81,11 +79,7 @@ export default function FlowsPage() {
           <h1 className="text-2xl font-bold tracking-tight">CCTP Cross-Chain Flows</h1>
           <p className="text-sm text-muted-foreground mt-1">30-day USDC transfer volume via Circle's Cross-Chain Transfer Protocol</p>
         </div>
-        {source && (
-          <Badge variant={source === "dune" ? "default" : "secondary"}>
-            {source === "dune" ? "Dune Analytics" : "Demo Data"}
-          </Badge>
-        )}
+        <Badge variant="default">Dune Analytics</Badge>
       </div>
 
       {/* Metrics */}

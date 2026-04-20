@@ -20,33 +20,54 @@ export interface HistoricalPoint {
   circulating: { peggedUSD: number };
 }
 
-const TRACKED_SYMBOLS = [
-  { symbol: "USDC", color: "#2563eb" },
-  { symbol: "USDT", color: "#22c55e" },
-  { symbol: "DAI", color: "#f59e0b" },
-  { symbol: "PYUSD", color: "#a855f7" },
-  { symbol: "FDUSD", color: "#ec4899" },
-  { symbol: "USDS", color: "#06b6d4" },
-];
+// Known brand colors; unknown symbols get palette fallback
+const SYMBOL_COLORS: Record<string, string> = {
+  USDC:  "#3752ff",
+  USDT:  "#22c55e",
+  DAI:   "#f59e0b",
+  PYUSD: "#a855f7",
+  FDUSD: "#ec4899",
+  USDS:  "#06b6d4",
+  USDe:  "#ef4444",
+  FRAX:  "#1e40af",
+  TUSD:  "#0ea5e9",
+  GUSD:  "#10b981",
+};
+const COLOR_PALETTE = ["#3752ff","#22c55e","#f59e0b","#a855f7","#ec4899","#06b6d4","#ef4444","#8b5cf6"];
 
-export const STABLECOIN_META = TRACKED_SYMBOLS.map((t) => ({ ...t, id: t.symbol }));
+export function colorFor(symbol: string, index: number): string {
+  return SYMBOL_COLORS[symbol] ?? COLOR_PALETTE[index % COLOR_PALETTE.length];
+}
 
-export async function fetchStablecoins(): Promise<StablecoinSummary[]> {
+export async function fetchStablecoins(): Promise<{
+  summaries: StablecoinSummary[];
+  totalMarketSupply: number;
+}> {
   const res = await fetch(`${BASE}/stablecoins?includePrices=true`, {
     next: { revalidate: 3600 },
   });
   const data = await res.json();
-  const symbols = new Set(TRACKED_SYMBOLS.map((t) => t.symbol));
-  // Pick the largest circulating supply for each symbol (dedup)
+  const allAssets = data.peggedAssets as StablecoinSummary[];
+
+  // Only USD-pegged assets; dedup by symbol (keep largest supply entry)
   const seen = new Map<string, StablecoinSummary>();
-  for (const a of data.peggedAssets as StablecoinSummary[]) {
-    if (!symbols.has(a.symbol)) continue;
-    const existing = seen.get(a.symbol);
+  for (const a of allAssets) {
+    if (a.pegType !== "peggedUSD") continue;
     const cur = a.circulating?.peggedUSD ?? 0;
-    const existCur = existing?.circulating?.peggedUSD ?? 0;
-    if (!existing || cur > existCur) seen.set(a.symbol, a);
+    const existCur = seen.get(a.symbol)?.circulating?.peggedUSD ?? 0;
+    if (cur > existCur) seen.set(a.symbol, a);
   }
-  return TRACKED_SYMBOLS.map((t) => seen.get(t.symbol)).filter(Boolean) as StablecoinSummary[];
+
+  // True total market supply across all USD-pegged stablecoins
+  let totalMarketSupply = 0;
+  seen.forEach((a) => { totalMarketSupply += a.circulating?.peggedUSD ?? 0; });
+
+  // Top 8 by current circulating supply
+  const summaries = Array.from(seen.values())
+    .sort((a, b) => (b.circulating?.peggedUSD ?? 0) - (a.circulating?.peggedUSD ?? 0))
+    .slice(0, 8);
+
+  return { summaries, totalMarketSupply };
 }
 
 export async function fetchStablecoinHistory(id: string): Promise<HistoricalPoint[]> {

@@ -30,6 +30,7 @@ interface HistoryPoint {
 interface MarketData {
   cards: StablecoinCard[];
   histories: HistoryPoint[];
+  totalMarketSupply: number;
 }
 
 function fmt(n: number) {
@@ -49,7 +50,7 @@ export default function MarketPage() {
   }, []);
 
   const usdc = data?.cards.find((c) => c.symbol === "USDC");
-  const totalSupply = (data?.cards ?? []).reduce((s, c) => s + c.circulating, 0);
+  const totalSupply = data?.totalMarketSupply ?? (data?.cards ?? []).reduce((s, c) => s + c.circulating, 0);
   const usdcShare = usdc && totalSupply ? ((usdc.circulating / totalSupply) * 100).toFixed(1) : "—";
 
   // Build combined time-series for stacked area
@@ -78,7 +79,7 @@ export default function MarketPage() {
           <>
             <MetricCard label="USDC Supply" value={fmt(usdc?.circulating ?? 0)} trend={usdc?.change30d} sub="vs 30 days ago" accent="#2563eb" />
             <MetricCard label="USDC Market Share" value={`${usdcShare}%`} sub="of tracked stablecoins" accent="#2563eb" />
-            <MetricCard label="Total Stablecoin Supply" value={fmt(totalSupply)} sub="USDC+USDT+DAI+PYUSD+" accent="#6b7280" />
+            <MetricCard label="Total Stablecoin Supply" value={fmt(totalSupply)} sub="All USD-pegged assets" accent="#6b7280" />
             <MetricCard label="USDC Chains" value={String(usdc?.chains.length ?? 0)} sub="Active networks" accent="#22c55e" />
           </>
         )}
